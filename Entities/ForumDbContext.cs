@@ -11,11 +11,38 @@ namespace Forum.Entities
         private string _connectionString = 
             "Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;";
 
-
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Topic> Topics { get; set; }
+        public DbSet<BlackList> BlackList { get; set; }
+        public DbSet<Response> Responses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-    
+            modelBuilder.Entity<User>()
+                .Property(u => u.Username)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            modelBuilder.Entity<Topic>()
+                .Property(t => t.Content)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Response>()
+                .Property(r => r.Content)
+                .IsRequired();
+
+            modelBuilder.Entity<Category>()
+                .Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(40);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

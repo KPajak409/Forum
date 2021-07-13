@@ -7,13 +7,14 @@ namespace Forum.Entities
 {
     public class Response
     {
-        private int Id { get; set;}
-        private int Author { get; set;}
+        public int Id { get; set;}
+        public int? AuthorId { get; set;}
+        public virtual User Author { get; set;}
 
         public DateTime Date {get; set;}
         public string Content { get; set;}
 
-        private int TopicId { get; set;}
+        public int TopicId { get; set;}
         public virtual Topic Topic { get; set;}
     }
 }
