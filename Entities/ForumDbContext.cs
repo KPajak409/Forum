@@ -8,7 +8,7 @@ namespace Forum.Entities
 {
     public class ForumDbContext : DbContext
     {
-        private string _connectionString = 
+        private readonly string _connectionString = 
             "Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;";
 
         public DbSet<User> Users { get; set; }
