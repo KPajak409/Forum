@@ -1,4 +1,5 @@
 ﻿using Forum.Entities;
+using Forum.Models;
 using Forum.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace Forum.Controllers
 {
     [Route("api/category")]
+    [ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -17,6 +19,7 @@ namespace Forum.Controllers
         {
             _categoryService = categoryService;
         }
+
         [HttpGet]
         public ActionResult<IEnumerable<Category>> GetAll()
         {
@@ -29,6 +32,14 @@ namespace Forum.Controllers
         {
             var category = _categoryService.GetById(id);
             return Ok(category);
+        }
+
+        [HttpPost]
+        public ActionResult CreateCategory([FromBody]CreateCategoryDto dto)
+        {
+            var categoryId = _categoryService.Create(dto);
+            return Created($"/api/category/{categoryId}", null);
+
         }
     }
 }

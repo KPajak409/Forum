@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Forum
@@ -31,7 +32,13 @@ namespace Forum
             services.AddScoped<ForumSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
