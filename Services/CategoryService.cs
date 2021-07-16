@@ -16,7 +16,9 @@ namespace Forum.Services
         IEnumerable<Category> Get();
         Category GetById(int id);
         int Create(CreateCategoryDto dto);
-             
+        void Delete(int id);
+        void Update(CreateCategoryDto dto, int id);
+
     }
     public class CategoryService : ICategoryService
     {
@@ -37,6 +39,8 @@ namespace Forum.Services
                 .Categories
                 .Include(t => t.Topics)
                     .ThenInclude(r => r.Responses)
+                .Include(t => t.Topics)
+                    .ThenInclude(u => u.Author)
                 .ToList();     
             return categories;
         }
@@ -47,10 +51,12 @@ namespace Forum.Services
                 .Categories
                 .Include(t => t.Topics)
                     .ThenInclude(r => r.Responses)
+                .Include(t => t.Topics)
+                    .ThenInclude(u => u.Author)
                 .FirstOrDefault(c => c.Id == id);
 
             if (category is null)
-                throw new NotFoundException($"Mordo No category with id = {id}");
+                throw new NotFoundException($"No category with id = {id}");
             return category;
         }
 
@@ -61,6 +67,33 @@ namespace Forum.Services
             _dbContext.SaveChanges();
 
             return category.Id;
+        }
+
+        public void Delete(int id)
+        {
+            var category = _dbContext
+                .Categories
+                .FirstOrDefault(c => c.Id == id);
+
+            if (category is null)
+                throw new NotFoundException($"No category with id = {id}");
+
+            _dbContext.Categories.Remove(category);
+            _dbContext.SaveChanges();         
+        }
+
+        public void Update(CreateCategoryDto dto,  int id)
+        {
+            var category = _dbContext
+                .Categories
+                .FirstOrDefault(c => c.Id == id);
+
+            if (category is null)
+               throw new NotFoundException($"No category with id = {id}");
+
+            category.Name = dto.Name;
+            category.Description = dto.Description;
+            _dbContext.SaveChanges();
         }
     }
 }

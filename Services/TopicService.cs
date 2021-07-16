@@ -13,8 +13,11 @@ namespace Forum.Services
 {
     public interface ITopicService
     {
-        IEnumerable<Topic> Get(int categoryId);
-        Topic GetById(int categoryId, int topicId);
+        IEnumerable<Topic> Get(int categoryid);
+        Topic GetById(int categoryid, int topicId);
+        int Create(CreateTopicDto dto, int categoryid);
+        void Delete(int categoryid, int id);
+        void Update(CreateTopicDto dto, int categoryid, int id);
     }
     public class TopicService : ITopicService
     {
@@ -28,41 +31,81 @@ namespace Forum.Services
             _mapper = mapper;
             _logger = logger;
         }
-        public IEnumerable<Topic> Get(int categoryId)
+        public IEnumerable<Topic> Get(int categoryid)
         {
-            var categories = GetByCategoryId(categoryId);
-
-            var topics = categories.Topics;
-            return topics;
+            var category = GetByCategoryId(categoryid);
+            return category.Topics;
         }
 
 
-        public Topic GetById(int categoryId, int id)
+        public Topic GetById(int categoryid, int id)
         {
+            var category = GetByCategoryId(categoryid);
 
-            var categories = GetByCategoryId(categoryId);
-
-            var topic = categories
+            var topic = category
                 .Topics
                 .FirstOrDefault(c => c.Id == id);
 
             if(topic is null)
-                throw new NotFoundException("get topic by id");
+                throw new NotFoundException($"No topic with id = {id}");
             return topic;
 
         }
 
-        private Category GetByCategoryId(int categoryId)
+        public int Create(CreateTopicDto dto, int categoryid)
+        {
+            var category = GetByCategoryId(categoryid);
+
+            var topic = _mapper.Map<Topic>(dto);
+            topic.Date = DateTime.Now;
+
+            category.Topics.Add(topic);
+            _dbContext.SaveChanges();
+
+            return topic.Id;
+        }
+
+        public void Delete(int categoryid, int id)
+        {
+            var category = GetByCategoryId(categoryid);
+
+            var topic = category
+                .Topics
+                .FirstOrDefault(c => c.Id == id);
+            if (topic is null)
+                throw new NotFoundException($"No topic with id = { id }");
+
+            category.Topics.Remove(topic);
+            _dbContext.SaveChanges();
+        }
+
+        public void Update(CreateTopicDto dto, int categoryid, int id)
+        {
+            var category = GetByCategoryId(categoryid);
+
+            var topic = category
+               .Topics
+               .FirstOrDefault(c => c.Id == id);
+
+            topic.Content = dto.Content;
+            _dbContext.SaveChanges();
+        }
+
+        private Category GetByCategoryId(int categoryid)
         {
             var category = _dbContext
                 .Categories
                 .Include(t => t.Topics)
                     .ThenInclude(r => r.Responses)
-                .FirstOrDefault(c => c.Id == categoryId);
+                .Include(t => t.Topics)
+                    .ThenInclude(u => u.Author)
+                .FirstOrDefault(c => c.Id == categoryid);
 
             if (category is null)
-                throw new NotFoundException($"Mordo No category with id = {categoryId}");
+                throw new NotFoundException($"Mordo No category with id = {categoryid}");
             return category;
         }
+
+        
     }
 }

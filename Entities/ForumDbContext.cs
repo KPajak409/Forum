@@ -30,6 +30,10 @@ namespace Forum.Entities
                 .IsRequired()
                 .HasMaxLength(50);
 
+            modelBuilder.Entity<User>()
+                .Property(u => u.DateOfBirth)
+                .IsRequired();
+
             modelBuilder.Entity<Topic>()
                 .Property(t => t.Content)
                 .IsRequired()
@@ -43,6 +47,11 @@ namespace Forum.Entities
                 .Property(c => c.Name)
                 .IsRequired()
                 .HasMaxLength(40);
+
+            modelBuilder.Entity<Category>()
+                .Property(c => c.Description)
+                .IsRequired()
+                .HasMaxLength(200);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -29,11 +29,13 @@ namespace Forum
         {
             services.AddControllersWithViews();
             services.AddDbContext<ForumDbContext>();
+            services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<ForumSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITopicService, TopicService>();
-            services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<IResponseService, ResponseService>();
+ 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

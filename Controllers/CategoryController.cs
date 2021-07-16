@@ -35,11 +35,24 @@ namespace Forum.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCategory([FromBody]CreateCategoryDto dto)
+        public ActionResult CreateCategory([FromBody] CreateCategoryDto dto)
         {
             var categoryId = _categoryService.Create(dto);
             return Created($"/api/category/{categoryId}", null);
+        }
 
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCategory([FromRoute] int id)
+        {
+            _categoryService.Delete(id);
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateCategory([FromBody] CreateCategoryDto dto, [FromRoute] int id)
+        {
+            _categoryService.Update(dto, id);
+            return Ok();
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Forum
         public ForumMappingProfile()
         {
             CreateMap<CreateCategoryDto, Category>();
+            CreateMap<CreateTopicDto, Topic>();
+            CreateMap<CreateResponseDto, Response>();
         }
     }
 }
