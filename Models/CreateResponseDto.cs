@@ -9,6 +9,7 @@ namespace Forum.Models
     public class CreateResponseDto
     {
         [Required]
+        [MaxLength(2000)]
         public string Content { get; set; }
     }
 }

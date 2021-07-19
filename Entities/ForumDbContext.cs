@@ -52,6 +52,11 @@ namespace Forum.Entities
                 .Property(c => c.Description)
                 .IsRequired()
                 .HasMaxLength(200);
+
+            modelBuilder.Entity<Role>()
+                .Property(r => r.Name)
+                .IsRequired();
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
