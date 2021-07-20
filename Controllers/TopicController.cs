@@ -47,7 +47,7 @@ namespace Forum.Controllers
         public ActionResult DeleteTopic([FromRoute] int categoryid, [FromRoute] int id)
         {
             _topicService.Delete(categoryid, id);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("{id}")]

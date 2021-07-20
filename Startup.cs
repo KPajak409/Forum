@@ -71,11 +71,16 @@ namespace Forum
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IResponseService, ResponseService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IBlackListService, BlackListService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserContextService, UserContextService>();
 
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<IAuthorizationHandler, TopicOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, ResponseOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, UserOperationRequirementHandler>();
             
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

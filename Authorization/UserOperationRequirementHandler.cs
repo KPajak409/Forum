@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Forum.Authorization
 {
-    public class TopicOperationRequirementHandler: AuthorizationHandler<TopicOperationRequirement, Topic>
+    public class UserOperationRequirementHandler : AuthorizationHandler<UserOperationRequirement, User>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TopicOperationRequirement requirement, Topic resource)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, UserOperationRequirement requirement, User resource)
         {
             if (requirement.ResourceOperation == ResourceOperation.Read ||
                 requirement.ResourceOperation == ResourceOperation.Create)
@@ -18,7 +18,7 @@ namespace Forum.Authorization
 
             var userId = context.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            if (resource.AuthorId == int.Parse(userId) ||
+            if (resource.Id == int.Parse(userId) ||
                 context.User.IsInRole("Moderator") ||
                 context.User.IsInRole("Admin"))
             {

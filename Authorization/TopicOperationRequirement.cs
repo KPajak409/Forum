@@ -11,9 +11,8 @@ namespace Forum.Authorization
         Create,
         Read,
         Update,
-        Delete
+        Delete       
     }
-
     public class TopicOperationRequirement : IAuthorizationRequirement
     {
         public TopicOperationRequirement(ResourceOperation resourceOperation)
@@ -22,6 +21,5 @@ namespace Forum.Authorization
         }
 
         public ResourceOperation ResourceOperation { get;  }
-
     }
 }

@@ -46,6 +46,14 @@ namespace Forum.Models.Validators
                     if (emailInUse)
                         context.AddFailure("Email", "That email is taken");
                 });
+
+            RuleFor(x => x.Username)
+                .Custom((value, context) =>
+                {
+                    var UsernameInUse = dbContext.Users.Any(u => u.Username == value);
+                    if (UsernameInUse)
+                        context.AddFailure("Username", "That username is taken");
+                });
         }
     }
 }

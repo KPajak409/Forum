@@ -1,6 +1,8 @@
-﻿using Forum.Entities;
+﻿using Forum.Authorization;
+using Forum.Entities;
 using Forum.Exceptions;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,20 +17,40 @@ namespace Forum.Services
 {
     public interface IAccountService
     {
+        User GetById(int userId);
         void RegisterUser(RegisterUserDto dto);
         string GenerateJwt(LoginUserDto dto);
+        void ChangeRole(int userId, int roleId);
+        void Update(UpdateUserDto dto, int userId);
     }
     public class AccountService : IAccountService
     {
         private readonly ForumDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
-        public AccountService(ForumDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
+        public AccountService(ForumDbContext dbContext, IPasswordHasher<User> passwordHasher, 
+            AuthenticationSettings authenticationSettings, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
+        public User GetById(int userId)
+        {
+            var user = _dbContext
+                .Users
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user is null)
+                throw new NotFoundException($"No user with id={userId}");
+
+            return user;
+        }
+
         public void RegisterUser(RegisterUserDto dto)
         {
             var newUser = new User()
@@ -47,6 +69,7 @@ namespace Forum.Services
             _dbContext.Users.Add(newUser);
             _dbContext.SaveChanges();
         }
+
         public string GenerateJwt(LoginUserDto dto)
         {
             var user = _dbContext.Users
@@ -88,6 +111,33 @@ namespace Forum.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
 
+        }
+
+        public void ChangeRole(int userId, int roleId)
+        {
+            var user = GetById(userId);
+            var role = _dbContext.Roles.FirstOrDefault(r => r.Id == roleId);
+
+            if(role is null)
+                throw new NotFoundException($"Role with id = {roleId} doesn't exist");
+            if(role.Name == "Admin")
+                throw new NotAuthorizedException("You can't set this role");
+
+            user.RoleId = roleId;
+        }
+
+        public void Update(UpdateUserDto dto, int userId)
+        {
+            var user = GetById(userId);
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, user, new UserOperationRequirement(ResourceOperation.Update)).Result;
+            if (!authorizationResult.Succeeded)
+                throw new NotAuthorizedException("You are not authorized");
+
+
+            user.Name = dto.Name;
+            user.SurName = dto.SurName;
+            _dbContext.SaveChanges();
         }
     }
 }

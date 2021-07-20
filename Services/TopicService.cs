@@ -73,7 +73,7 @@ namespace Forum.Services
             return topic.Id;
         }
 
-        public void Delete(int categoryid, int id)
+        public void Delete(int categoryid, int id) //authorized user, moderator, admin 
         {
             var category = GetByCategoryId(categoryid);
 
@@ -91,7 +91,7 @@ namespace Forum.Services
             _dbContext.SaveChanges();
         }
 
-        public void Update(CreateTopicDto dto, int categoryid, int id)
+        public void Update(CreateTopicDto dto, int categoryid, int id) //authorized user, moderator, admin
         {
             
             var category = GetByCategoryId(categoryid);
@@ -110,7 +110,7 @@ namespace Forum.Services
 
             topic.Content = dto.Content;
             _dbContext.SaveChanges();
-        }
+        } 
 
         private Category GetByCategoryId(int categoryid)
         {
