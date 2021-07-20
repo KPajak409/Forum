@@ -62,21 +62,21 @@ namespace Forum
                         new Topic()
                         {
                             Author = author,
-                            Date = DateTime.Now,
+                            Date = DateTime.Today,
                             Content = "Windows 11",
                             Responses = new List<Response>()
                             {
                                 new Response()
                                 {
                                     Author = author,
-                                    Date = DateTime.Now,
+                                    Date = DateTime.Today,
                                     Content = "Wtf is this, why is there no Ubunto 12 Update but this shitty OS is getting an update, gonna kill Bill Gates myself WhatTheDuck."
                                 },
 
                                 new Response()
                                 {
                                     Author = author2,
-                                    Date = DateTime.Now,
+                                    Date = DateTime.Today,
                                     Content = "Yumi is op on Windows 11.",
                                 }
                             }
@@ -84,7 +84,7 @@ namespace Forum
                         new Topic()
                         {
                             Author = author,
-                            Date = DateTime.Now,
+                            Date = DateTime.Today,
                             Content = "Why Linux is better then Windows",
                         }
                     }
@@ -99,20 +99,20 @@ namespace Forum
                         new Topic()
                         {
                             Author = author2,
-                            Date = DateTime.Now,
+                            Date = DateTime.Today,
                             Content = "Yuumi broken champion",
                             Responses = new List<Response>()
                             {
                                 new Response()
                                 {
                                     Author = author2,
-                                    Date = DateTime.Now,
+                                    Date = DateTime.Today,
                                     Content = "Lol yuumi is so broken check this clip"
                                 },
                                 new Response()
                                 {
                                     Author = author,
-                                    Date = DateTime.Now,
+                                    Date = DateTime.Today,
                                     Content = "Serio, nerf it"
                                 }
                             }

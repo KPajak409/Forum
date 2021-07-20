@@ -21,7 +21,12 @@ namespace Forum.Middleware
             {
                 await next.Invoke(context);
             }
-            catch(BadRequestException badRequestException)
+            catch (NotAuthorizedException notAuthorizedException)
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync(notAuthorizedException.Message);
+            }
+            catch (BadRequestException badRequestException)
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync(badRequestException.Message);

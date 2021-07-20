@@ -1,10 +1,12 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Forum.Authorization;
 using Forum.Entities;
 using Forum.Middleware;
 using Forum.Models;
 using Forum.Models.Validators;
 using Forum.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -62,15 +64,18 @@ namespace Forum
             services.AddScoped<ForumSeeder>();
             services.AddSwaggerGen();
             services.AddAutoMapper(this.GetType().Assembly);
+            services.AddHttpContextAccessor();
 
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IResponseService, ResponseService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserContextService, UserContextService>();
 
             services.AddControllers().AddFluentValidation();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            services.AddScoped<IAuthorizationHandler, TopicOperationRequirementHandler>();
             
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

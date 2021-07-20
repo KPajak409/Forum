@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Forum.Authorization;
 using Forum.Entities;
 using Forum.Exceptions;
 using Forum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Forum.Services
@@ -24,12 +27,16 @@ namespace Forum.Services
         private readonly ForumDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<TopicService> _logger;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public TopicService(ForumDbContext dbContext, IMapper mapper, ILogger<TopicService> logger)
+        public TopicService(ForumDbContext dbContext, IMapper mapper, ILogger<TopicService> logger, IAuthorizationService authorizationService, IUserContextService userContextService )
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
+            _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
         public IEnumerable<Topic> Get(int categoryid)
         {
@@ -57,7 +64,8 @@ namespace Forum.Services
             var category = GetByCategoryId(categoryid);
 
             var topic = _mapper.Map<Topic>(dto);
-            topic.Date = DateTime.Now;
+            topic.Date = DateTime.Today;
+            topic.AuthorId = _userContextService.GetUserId;
 
             category.Topics.Add(topic);
             _dbContext.SaveChanges();
@@ -75,17 +83,30 @@ namespace Forum.Services
             if (topic is null)
                 throw new NotFoundException($"No topic with id = { id }");
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, topic, new TopicOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+                throw new NotAuthorizedException("You are not authorized");
+
             category.Topics.Remove(topic);
             _dbContext.SaveChanges();
         }
 
         public void Update(CreateTopicDto dto, int categoryid, int id)
         {
+            
             var category = GetByCategoryId(categoryid);
 
             var topic = category
                .Topics
                .FirstOrDefault(c => c.Id == id);
+
+            if (topic is null)
+                throw new NotFoundException($"No topic with id = { id }");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, topic, new TopicOperationRequirement(ResourceOperation.Update)).Result;
+            if(!authorizationResult.Succeeded)
+                throw new NotAuthorizedException("You are not authorized");
+
 
             topic.Content = dto.Content;
             _dbContext.SaveChanges();
@@ -102,7 +123,7 @@ namespace Forum.Services
                 .FirstOrDefault(c => c.Id == categoryid);
 
             if (category is null)
-                throw new NotFoundException($"Mordo No category with id = {categoryid}");
+                throw new NotFoundException($"No category with id = {categoryid}");
             return category;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Forum.Entities;
 using Forum.Models;
 using Forum.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,9 @@ namespace Forum.Controllers
 {
     [Route("api/category")]
     [ApiController]
+    [Authorize(Roles = "Admin, Moderator")]
+    
+
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -21,6 +25,7 @@ namespace Forum.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<Category>> GetAll()
         {
             var categories = _categoryService.Get();
@@ -28,6 +33,7 @@ namespace Forum.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<Category> GetById([FromRoute] int id)
         {
             var category = _categoryService.GetById(id);

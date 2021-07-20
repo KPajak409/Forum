@@ -27,6 +27,7 @@ namespace Forum.Models.Validators
                 .LessThanOrEqualTo(DateTime.Now.Year - 13);
 
             RuleFor(x => x.Password)
+                .NotEmpty()
                 .MinimumLength(6)
                 .MaximumLength(15);
 

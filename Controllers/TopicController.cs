@@ -1,10 +1,12 @@
 ﻿using Forum.Entities;
 using Forum.Models;
 using Forum.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Forum.Controllers
@@ -34,6 +36,7 @@ namespace Forum.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult CreateTopic([FromBody] CreateTopicDto dto, [FromRoute] int categoryid)
         {
             var topicId = _topicService.Create(dto, categoryid);

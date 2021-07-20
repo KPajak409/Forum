@@ -10,7 +10,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Forum.Services
 {
@@ -30,7 +29,7 @@ namespace Forum.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
         }
-         public void RegisterUser(RegisterUserDto dto)
+        public void RegisterUser(RegisterUserDto dto)
         {
             var newUser = new User()
             {
@@ -63,21 +62,27 @@ namespace Forum.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, $"{user.Name} {user.SurName}"),
                 new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
                 new Claim("DateOfBirth", user.DateOfBirth.ToString("yyyy-MM-dd")),
                 new Claim("Username", user.Username),
                 new Claim("Email", user.Email)
             };
 
+            if (user.Name is not null && user.SurName is not null)
+            {
+                claims.Add(
+                    new Claim(ClaimTypes.Name, $"{user.Name} {user.SurName}")
+                    );
+            }
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpireDays);
 
             var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer,
-                _authenticationSettings.JwtIssuer, 
-                claims, 
-                expires: expires, 
+                _authenticationSettings.JwtIssuer,
+                claims,
+                expires: expires,
                 signingCredentials: credentials);
 
             var tokenHandler = new JwtSecurityTokenHandler();

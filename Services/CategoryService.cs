@@ -20,6 +20,7 @@ namespace Forum.Services
         void Update(CreateCategoryDto dto, int id);
 
     }
+
     public class CategoryService : ICategoryService
     {
         private readonly ForumDbContext _dbContext;
