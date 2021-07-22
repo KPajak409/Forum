@@ -12,10 +12,10 @@ namespace Forum.Controllers
 {
     [Route("api/category/{categoryid}/topic/{topicid}/response")]
     [ApiController]
-    public class ResponseController : ControllerBase
+    public class ResponseApiController : ControllerBase
     {
         private readonly IResponseService _responseService;
-        public ResponseController(IResponseService responseService)
+        public ResponseApiController(IResponseService responseService)
         {
             _responseService = responseService;
         }

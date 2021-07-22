@@ -11,11 +11,11 @@ namespace Forum.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountApiController : ControllerBase
     {
         private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountService)
+        public AccountApiController(IAccountService accountService)
         {
             _accountService = accountService;
         }
@@ -55,5 +55,14 @@ namespace Forum.Controllers
             _accountService.ChangeRole(id, roleId);
             return Ok();
         }
+
+        [Authorize(Roles = "Admin, Moderator")]
+        [HttpPost("{id}")]
+        public ActionResult BanUser([FromRoute] int id, [FromBody] BanUserDto dto)
+        {
+            _accountService.BanUser(id, dto);
+            return Ok();
+        }
+
     }
 }

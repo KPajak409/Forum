@@ -1,4 +1,5 @@
-﻿using Forum.Authorization;
+﻿using AutoMapper;
+using Forum.Authorization;
 using Forum.Entities;
 using Forum.Exceptions;
 using Forum.Models;
@@ -22,6 +23,7 @@ namespace Forum.Services
         string GenerateJwt(LoginUserDto dto);
         void ChangeRole(int userId, int roleId);
         void Update(UpdateUserDto dto, int userId);
+        int BanUser(int userId, BanUserDto dto);
     }
     public class AccountService : IAccountService
     {
@@ -30,14 +32,17 @@ namespace Forum.Services
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
+        private readonly IMapper _mapper;
         public AccountService(ForumDbContext dbContext, IPasswordHasher<User> passwordHasher, 
-            AuthenticationSettings authenticationSettings, IAuthorizationService authorizationService, IUserContextService userContextService)
+            AuthenticationSettings authenticationSettings, IAuthorizationService authorizationService,
+            IUserContextService userContextService, IMapper mapper)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _authorizationService = authorizationService;
             _userContextService = userContextService;
+            _mapper = mapper;
         }
         public User GetById(int userId)
         {
@@ -138,6 +143,22 @@ namespace Forum.Services
             user.Name = dto.Name;
             user.SurName = dto.SurName;
             _dbContext.SaveChanges();
+        }
+
+        public int BanUser(int userId, BanUserDto dto)
+        {
+            var modId = _userContextService.GetUserId;
+            var ban = _mapper.Map<BlackList>(dto);
+
+            ban.ModId = modId;
+            ban.UserId = userId;
+            ban.AcquireDate = DateTime.Now;
+            ban.ExpireDate = DateTime.Now.AddDays(dto.Days);
+            
+            _dbContext.BlackList.Add(ban);
+            _dbContext.SaveChanges();
+
+            return ban.Id;
         }
     }
 }

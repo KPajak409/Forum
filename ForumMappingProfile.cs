@@ -15,6 +15,7 @@ namespace Forum
             CreateMap<CreateCategoryDto, Category>();
             CreateMap<CreateTopicDto, Topic>();
             CreateMap<CreateResponseDto, Response>();
+            CreateMap<BanUserDto, BlackList>();
         }
     }
 }

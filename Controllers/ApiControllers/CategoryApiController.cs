@@ -16,10 +16,10 @@ namespace Forum.Controllers
     [Authorize(Roles = "Admin, Moderator")]
     
 
-    public class CategoryController : ControllerBase
+    public class CategoryApiController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        public CategoryApiController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }

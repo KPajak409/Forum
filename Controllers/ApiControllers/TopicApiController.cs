@@ -13,10 +13,10 @@ namespace Forum.Controllers
 {
     [Route("api/category/{categoryid}/topic")]
     [ApiController]
-    public class TopicController : ControllerBase
+    public class TopicApiController : ControllerBase
     {
         private readonly ITopicService _topicService;
-        public TopicController(ITopicService topicService)
+        public TopicApiController(ITopicService topicService)
         {
             _topicService = topicService;
         }
