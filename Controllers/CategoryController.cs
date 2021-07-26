@@ -1,6 +1,5 @@
 ﻿using Forum.Entities;
 using Forum.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
-    public class HomeController : Controller
+    public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
-        public HomeController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
         }
 
-        public ActionResult<IEnumerable<Category>> Index()
+        public ActionResult<Category> Category(int id)
         {
-            var categories = _categoryService.Get();
-            return View(categories);
+            var category = _categoryService.GetById(id);
+            return View(category);
         }
     }
 }
