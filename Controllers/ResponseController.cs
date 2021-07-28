@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Forum.Models;
+using Forum.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,81 +10,71 @@ using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
+    [Route("Category/{categoryid}/Topic/{topicid}/Response")]
     public class ResponseController : Controller
     {
-        // GET: ResponseController
+        private readonly IResponseService _responseService;
+
+        public ResponseController(IResponseService responseService)
+        {
+            _responseService = responseService;
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: ResponseController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet]
+        public ActionResult Details(int topicid, int id)
         {
+            var reponse = _responseService.GetById(topicid, id);
+            return View(reponse);
+        }
+
+
+        [HttpPost("Create")]
+        public ActionResult Create(CreateResponseDto dto, int categoryid, int topicid)
+        {
+            if (ModelState.IsValid)
+            {
+                _responseService.Create(dto, topicid);
+                return RedirectToAction("Details", "Category", new { id = categoryid });
+            }
             return View();
         }
 
-        // GET: ResponseController/Create
-        public ActionResult Create()
+        [HttpGet("Edit/{id}")]
+        public ActionResult Edit(int topicid, int? id)
         {
-            return View();
+            var reponse = _responseService.GetById(topicid, (int)id);
+            return View(reponse);
         }
 
-        // POST: ResponseController/Create
-        [HttpPost]
+        // POST: HomeController1/Edit/5
+        [HttpPost("EditSave/{id}")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult EditSave(CreateResponseDto dto, int categoryid, int topicid, int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _responseService.Update(dto, topicid, id);
+            return RedirectToAction("Details", "Category", new { id = categoryid });
         }
 
-        // GET: ResponseController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("Delete/{id}")]
+        public ActionResult Delete(int topicid, int id)
         {
-            return View();
+            var reponse = _responseService.GetById(topicid, id);
+            return View(reponse);
         }
 
-        // POST: ResponseController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // POST: HomeController1/Delete/5
+        [HttpPost("DeleteConfirmed/{id}")]
+        //[ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int topicid, int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: ResponseController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ResponseController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _responseService.Delete(topicid, id);
+            return RedirectToAction("Details", "Category", new { id = topicid });
         }
     }
 }

@@ -82,6 +82,11 @@ namespace Forum.Services
             if (response is null)
                 throw new NotFoundException($"No response with id = { id }");
 
+            /*var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new TopicOperationRequirement(ResourceOperation.Delete)).Result;
+            if (!authorizationResult.Succeeded)
+                throw new NotAuthorizedException("You are not authorized");*/
+
+
             topic.Responses.Remove(response);
             _dbContext.SaveChanges();
         }
@@ -97,9 +102,9 @@ namespace Forum.Services
             if (response is null)
                 throw new NotFoundException($"No reponse with id = {id}");
 
-            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new TopicOperationRequirement(ResourceOperation.Update)).Result;
-            if (!authorizationResult.Succeeded)
-                throw new NotAuthorizedException("You are not authorized");
+            /*var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new TopicOperationRequirement(ResourceOperation.Update)).Result;
+           if (!authorizationResult.Succeeded)
+               throw new NotAuthorizedException("You are not authorized"); */
 
 
 

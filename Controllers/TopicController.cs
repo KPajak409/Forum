@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
-    [Route("Category/{categoryid}/topic")]
+    [Route("Category/{categoryid}/Topic")]
     public class TopicController : Controller
     {
         private readonly ITopicService _topicService;
@@ -51,7 +51,7 @@ namespace Forum.Controllers
         }
 
         // POST: HomeController1/Edit/5
-        [HttpPut("{id}")]
+        [HttpPost("EditSave/{id}")]
         [ValidateAntiForgeryToken]
         public ActionResult EditSave(CreateTopicDto dto, int categoryid, int id)
         {
@@ -69,7 +69,6 @@ namespace Forum.Controllers
 
         // POST: HomeController1/Delete/5
         [HttpPost("DeleteConfirmed/{id}")]
-        [AllowAnonymous]
         //[ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int categoryid, int id)
         {

@@ -1,33 +1,34 @@
-﻿@model Forum.Entities.Topic
+﻿@model Forum.Models.CreateResponseDto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
-<h4>Topic</h4>
+<h4>CreateResponseDto</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" >
-            <input type="hidden" asp-for="Id" />
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input asp-action="EditSave" asp-route-id="@Model.Id" asp-route-categoryid="@Model.CategoryId" method="post" type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-controller="Category" asp-action="Details" asp-route-id="@Model.CategoryId">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

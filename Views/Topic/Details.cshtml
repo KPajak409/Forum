@@ -5,39 +5,82 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="text-center">
+    <h1 style="text-align:center;">@Html.DisplayFor(model => model.Content) </h1>
+    <form asp-action="Create" asp-controller="Response" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Create" class="btn btn-secondary" />
+    </form>
+</div>
 
 <div>
     <h4>Topic</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Author)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Author.Email)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Content)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Content)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Category)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Category.Description)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-controller="Topic" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    @foreach (var item in Model.Responses)
+    {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Responses.First().Author.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Responses.First().Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Responses.First().Date)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td >
+                    @Html.DisplayFor(modelItem => item.Author.Email)
+                </td>
+                <td>
+                    <a asp-controller="Response" asp-action="Details" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Content)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    <a asp-controller="Response" asp-action="Edit" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Response" asp-action="Delete" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    }
+</div>
+<div>
     <a asp-controller="Category" asp-action="Details" asp-route-id="@Model.CategoryId">Back to List</a>
 </div>

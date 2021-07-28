@@ -70,5 +70,7 @@ namespace Forum.Entities
         public DbSet<Forum.Models.CreateOrUpdateCategoryDto> CreateCategoryDto { get; set; }
 
         public DbSet<Forum.Models.CreateTopicDto> CreateTopicDto { get; set; }
+
+        public DbSet<Forum.Models.CreateResponseDto> CreateResponseDto { get; set; }
     }
 }
