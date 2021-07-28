@@ -36,30 +36,19 @@ namespace Forum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var authenticationSettings = new AuthenticationSettings();
+            services.AddDbContext<ForumDbContext>();
 
-            Configuration.GetSection("Authentication").Bind(authenticationSettings);
-            services.AddSingleton(authenticationSettings);
-            services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = "Bearer";
-                option.DefaultScheme = "Bearer";
-                option.DefaultChallengeScheme = "Bearer";
-            }).AddJwtBearer(cfg =>
-            {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = true;
-                cfg.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = authenticationSettings.JwtIssuer,
-                    ValidAudience = authenticationSettings.JwtIssuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
-                };
-            });
+            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<Role>()
+                .AddRoleManager<RoleManager<Role>>()
+                .AddUserManager<UserManager<User>>()
+                .AddEntityFrameworkStores<ForumDbContext>();
+
+
 
             services.AddControllersWithViews(); 
 
-            services.AddDbContext<ForumDbContext>();
+            
             services.AddScoped<ErrorHandlingMiddleware>();
             services.AddScoped<ForumSeeder>();
             services.AddSwaggerGen();
@@ -70,10 +59,8 @@ namespace Forum
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IResponseService, ResponseService>();
-            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IBlackListService, BlackListService>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserContextService, UserContextService>();
 
             services.AddControllers().AddFluentValidation();
@@ -81,7 +68,7 @@ namespace Forum
             services.AddScoped<IAuthorizationHandler, TopicOperationRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, ResponseOperationRequirementHandler>();
             services.AddScoped<IAuthorizationHandler, UserOperationRequirementHandler>();
-            
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -99,7 +86,9 @@ namespace Forum
             }
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseRouting();
             app.UseAuthentication();
+            //app.UseMvc();
             app.UseHttpsRedirection();
 
             app.UseSwagger();
@@ -109,7 +98,7 @@ namespace Forum
             });
             app.UseStaticFiles();
 
-            app.UseRouting();
+            
 
             app.UseAuthorization();
 
@@ -117,7 +106,8 @@ namespace Forum
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Category}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

@@ -1,29 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Forum.Models;
 
 namespace Forum.Entities
 {
-    public class ForumDbContext : DbContext
+    public class ForumDbContext : IdentityDbContext<User, Role, int>
     {
         private readonly string _connectionString = 
             "Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;";
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        //public virtual DbSet<User> Users { get; set; }
+        //public DbSet<Role> Roles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<BlackList> BlackList { get; set; }
         public DbSet<Response> Responses { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-            modelBuilder.Entity<User>()
+            base.OnModelCreating(modelBuilder);
+            /*modelBuilder.Entity<User>()
                 .Property(u => u.Username)
                 .IsRequired()
-                .HasMaxLength(20);
+                .HasMaxLength(20);*/
 
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
@@ -63,5 +66,9 @@ namespace Forum.Entities
         {
             optionsBuilder.UseSqlServer(_connectionString);
         }
+
+        public DbSet<Forum.Models.CreateOrUpdateCategoryDto> CreateCategoryDto { get; set; }
+
+        public DbSet<Forum.Models.CreateTopicDto> CreateTopicDto { get; set; }
     }
 }

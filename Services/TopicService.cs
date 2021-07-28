@@ -52,6 +52,7 @@ namespace Forum.Services
             var topic = category
                 .Topics
                 .FirstOrDefault(c => c.Id == id);
+            //var responses = topic.Responses.ToList();
 
             if(topic is null)
                 throw new NotFoundException($"No topic with id = {id}");
@@ -87,7 +88,7 @@ namespace Forum.Services
             if (!authorizationResult.Succeeded)
                 throw new NotAuthorizedException("You are not authorized");
 
-            category.Topics.Remove(topic);
+            _dbContext.Topics.Remove(topic);
             _dbContext.SaveChanges();
         }
 

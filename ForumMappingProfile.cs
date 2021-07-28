@@ -12,7 +12,8 @@ namespace Forum
     {
         public ForumMappingProfile()
         {
-            CreateMap<CreateCategoryDto, Category>();
+            CreateMap<CreateOrUpdateCategoryDto, Category>();
+            CreateMap<Category, CreateOrUpdateCategoryDto>();
             CreateMap<CreateTopicDto, Topic>();
             CreateMap<CreateResponseDto, Response>();
             CreateMap<BanUserDto, BlackList>();

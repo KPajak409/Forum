@@ -39,7 +39,7 @@ namespace Forum
             var author = new User()
             {
                 Email = "Kuciapczek@wp.pl",
-                Username = "AverageLinuxEnjoyer",
+                //Username = "AverageLinuxEnjoyer",
                 Name = "Janusz",
                 SurName = "Nowak",
                 DateOfBirth = DateTime.Parse("1998-02-21"),
@@ -47,7 +47,7 @@ namespace Forum
             var author2 = new User()
             {
                 Email = "CutieWaifu@gmail.com",
-                Username = "OwO",
+                //Username = "OwO",
                 DateOfBirth = DateTime.Parse("2000-05-19")
             };
 

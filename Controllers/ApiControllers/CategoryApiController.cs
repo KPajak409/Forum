@@ -41,7 +41,7 @@ namespace Forum.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateCategory([FromBody] CreateCategoryDto dto)
+        public ActionResult CreateCategory([FromBody] CreateOrUpdateCategoryDto dto)
         {
             var categoryId = _categoryService.Create(dto);
             return Created($"/api/category/{categoryId}", null);
@@ -55,7 +55,7 @@ namespace Forum.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateCategory([FromBody] CreateCategoryDto dto, [FromRoute] int id)
+        public ActionResult UpdateCategory([FromBody] CreateOrUpdateCategoryDto dto, [FromRoute] int id)
         {
             _categoryService.Update(dto, id);
             return Ok();

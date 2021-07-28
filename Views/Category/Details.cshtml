@@ -1,0 +1,52 @@
+﻿@using Forum.Entities;
+@model Category;
+
+@{
+    ViewData["Title"] = "Category";
+}
+
+<h1 style="text-align:center;">@Html.DisplayFor(model => model.Name) </h1>
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topics.First().Author.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topics.First().Content)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Topics.First().Date)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Topics)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author.Email)
+                </td>
+                <td>
+                    <a asp-controller="Topic" asp-action="Details" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Content)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>    
+                    <a asp-controller="Topic" asp-action="Edit" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-controller="Topic" asp-action="Delete" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

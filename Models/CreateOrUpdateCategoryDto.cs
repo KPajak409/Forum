@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Forum.Models
 {
-    public class CreateCategoryDto
+    public class CreateOrUpdateCategoryDto
     {
+        public int? Id { get; set; }
         [Required]
         [MaxLength(40)]
         public string Name { get; set; }
