@@ -14,7 +14,7 @@ namespace Forum.Controllers
     //[Authorize(Roles = "Admin, Moderator")]
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _categoryService;     
+        private readonly ICategoryService _categoryService;
 
         public CategoryController(ICategoryService categoryService)
         {
