@@ -32,13 +32,13 @@ namespace Forum.Controllers
             return View(topic);
         }
 
-        // GET: HomeController1/Create
+        [HttpPost("Create")]
         public ActionResult Create(CreateTopicDto dto, int categoryid)
         {
             if (ModelState.IsValid)
             {
                 _topicService.Create(dto, categoryid);
-                return RedirectToAction("Details", "Category", categoryid);
+                return RedirectToAction("Details", "Category", new { id = categoryid });
             }
             return View();
         }
@@ -56,7 +56,7 @@ namespace Forum.Controllers
         public ActionResult EditSave(CreateTopicDto dto, int categoryid, int id)
         {
             _topicService.Update(dto, categoryid, id);
-            return RedirectToAction($"Details", "Category", new { id = categoryid });
+            return RedirectToAction("Details", "Category", new { id = categoryid });
         }
 
         // GET: HomeController1/Delete/5
@@ -75,7 +75,7 @@ namespace Forum.Controllers
         {
             
             _topicService.Delete(categoryid, id);
-            return RedirectToAction($"Details", "Category", new { id = categoryid });
+            return RedirectToAction("Details", "Category", new { id = categoryid });
         }
     }
 }

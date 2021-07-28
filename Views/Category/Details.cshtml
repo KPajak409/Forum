@@ -5,7 +5,13 @@
     ViewData["Title"] = "Category";
 }
 
-<h1 style="text-align:center;">@Html.DisplayFor(model => model.Name) </h1>
+<div class="text-center">
+    <h1 style="text-align:center;">@Html.DisplayFor(model => model.Name) </h1>
+        <form asp-action="Create" asp-controller="Topic" asp-route-categoryid="@Model.Id" method="post">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Create" class="btn btn-secondary" />
+        </form>
+</div>
 
 <div>
     <table class="table">
