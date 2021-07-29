@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Forum.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -22,7 +23,7 @@ namespace Forum.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        public string Email { get; set; }
         public string Username { get; set; }
 
         [TempData]
@@ -33,20 +34,36 @@ namespace Forum.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string Name { get; set; }
+
+            [StringLength(20, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string SurName { get; set; }
+
+            [DataType(DataType.Date)]
+            public DateTime DateOfBirth { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            
         }
 
         private async Task LoadAsync(User user)
         {
+            var email = await _userManager.GetEmailAsync(user);
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+            Email = email;
             Username = userName;
 
             Input = new InputModel
             {
+                Name = user.Name,
+                SurName = user.SurName,
+                DateOfBirth = user.DateOfBirth,
                 PhoneNumber = phoneNumber
             };
         }
@@ -86,6 +103,25 @@ namespace Forum.Areas.Identity.Pages.Account.Manage
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
                 }
+            }
+
+            //var store = new UserStore<User>(new ForumDbContext());
+            //var manager = new UserManager(store);
+            if(Input.Name != user.Name)
+                user.Name = Input.Name;
+
+            if (Input.SurName != user.SurName)
+                user.SurName = Input.SurName;
+
+            if (Input.DateOfBirth != user.DateOfBirth)
+                user.DateOfBirth = Input.DateOfBirth;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if(!result.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to set phone number.";
+                return RedirectToPage();
             }
 
             await _signInManager.RefreshSignInAsync(user);

@@ -1,32 +1,40 @@
 ﻿@using Forum.Entities;
 @model Category;
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Category";
 }
 
 <div class="text-center">
-    <h1 style="text-align:center;">@Html.DisplayFor(model => model.Name) </h1>
-        <form asp-action="Create" asp-controller="Topic" asp-route-categoryid="@Model.Id" method="post">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Create" class="btn btn-secondary" />
-        </form>
+    <h1 style="text-align:center;">@Html.DisplayFor(model => model.Name) </h1> <hr/>
+    @if(SignInManager.IsSignedIn(User))
+        {
+            <form asp-action="Create" asp-controller="Topic" asp-route-categoryid="@Model.Id" method="post">
+                <input type="hidden" asp-for="Id" />           
+                <input type="submit" value="Create new topic" class="btn btn-secondary" />
+            </form>
+        }
+    
 </div>
-
+<hr/>
 <div>
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Topics.First().Author.Email)
+                    @Html.DisplayNameFor(model => model.Topics.First().Author.UserName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Topics.First().Content)
+                    Title
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Topics.First().Date)
                 </th>
-                <th></th>
+                <th>
+                    Number of responses
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -34,7 +42,7 @@
             {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Author.Email)
+                    <a asp-controller="User" asp-action="Details" asp-route-id="@item.AuthorId"> @Html.DisplayFor(modelItem => item.Author.UserName) </a>
                 </td>
                 <td>
                     <a asp-controller="Topic" asp-action="Details" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Content)</a>
@@ -42,10 +50,21 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
-                <td>    
-                    <a asp-controller="Topic" asp-action="Edit" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Topic" asp-action="Delete" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Delete</a>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Responses.Count)
                 </td>
+                @if (UserManager.GetUserId(User) is not null)
+                {
+
+                @if (int.Parse(UserManager.GetUserId(User)) == item.AuthorId || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <td>
+                        <a asp-controller="Topic" asp-action="Edit" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="Topic" asp-action="Delete" asp-route-categoryid="@item.CategoryId" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+                }
+
             </tr>
             }
 

@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.Author)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Author.Email)
+            <a asp-controller="User" asp-action="Details" asp-route-id="@Model.AuthorId"> @Html.DisplayFor(model => model.Author.UserName) </a>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Date)

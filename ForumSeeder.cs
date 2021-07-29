@@ -15,7 +15,7 @@ namespace Forum
             _dbContext = dbContext;
         }
 
-        public void Seed()
+        /*public void Seed()
         {
             if (_dbContext.Database.CanConnect())
             {
@@ -32,7 +32,7 @@ namespace Forum
                     _dbContext.SaveChanges();
                 }
             }
-        }
+        }*/
 
         private IEnumerable<Category> GetCategories()
         {

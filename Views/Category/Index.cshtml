@@ -9,14 +9,17 @@
 }
 
 <div class="text-center">
-    <h1>Index</h1>
-
+    <h1>Categories</h1>
+    
     <p>
         @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
         {
-            <a asp-action="Create">Create New</a>
+            <hr />
+            <a asp-action="Create" method="post" type="submit" value="Create new category" class="btn btn-secondary">Create new category</a>
+            <hr />
         }
     </p>
+    
 </div>
 <table class="table">
     <thead>

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace Forum.Controllers
 {
     [Route("Category/{categoryid}/Topic")]
+    [Authorize]
     public class TopicController : Controller
     {
         private readonly ITopicService _topicService;
@@ -25,9 +26,10 @@ namespace Forum.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Details(int categoryid, int id)
         {
-            //var routeValues = Url.ActionContext.RouteData.Values["id"];
+           
             var topic = _topicService.GetById(categoryid, id);
             return View(topic);
         }
@@ -37,8 +39,8 @@ namespace Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                _topicService.Create(dto, categoryid);
-                return RedirectToAction("Details", "Category", new { id = categoryid });
+                var id =_topicService.Create(dto, categoryid);
+                return View("Details", _topicService.GetById(categoryid, id));
             }
             return View();
         }

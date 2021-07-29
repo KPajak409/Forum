@@ -62,7 +62,7 @@ namespace Forum.Services
             var topic = GetByTopicId(topicid);
 
             var response = _mapper.Map<Response>(dto);
-            response.Date = DateTime.Today;
+            response.Date = DateTime.Now;
             response.AuthorId = _userContextService.GetUserId;
 
             topic.Responses.Add(response);
@@ -82,9 +82,9 @@ namespace Forum.Services
             if (response is null)
                 throw new NotFoundException($"No response with id = { id }");
 
-            /*var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new TopicOperationRequirement(ResourceOperation.Delete)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new ResponseOperationRequirement(ResourceOperation.Delete)).Result;
             if (!authorizationResult.Succeeded)
-                throw new NotAuthorizedException("You are not authorized");*/
+                throw new NotAuthorizedException("You are not authorized");
 
 
             topic.Responses.Remove(response);
@@ -100,11 +100,11 @@ namespace Forum.Services
                .FirstOrDefault(r => r.Id == id);
 
             if (response is null)
-                throw new NotFoundException($"No reponse with id = {id}");
+                throw new NotFoundException($"No response with id = {id}");
 
-            /*var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new TopicOperationRequirement(ResourceOperation.Update)).Result;
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, response, new ResponseOperationRequirement(ResourceOperation.Update)).Result;
            if (!authorizationResult.Succeeded)
-               throw new NotAuthorizedException("You are not authorized"); */
+               throw new NotAuthorizedException("You are not authorized");
 
 
 

@@ -65,8 +65,9 @@ namespace Forum.Services
             var category = GetByCategoryId(categoryid);
 
             var topic = _mapper.Map<Topic>(dto);
-            topic.Date = DateTime.Today;
+            topic.Date = DateTime.Now;
             topic.AuthorId = _userContextService.GetUserId;
+
 
             category.Topics.Add(topic);
             _dbContext.SaveChanges();

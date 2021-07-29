@@ -1,5 +1,7 @@
 ﻿@model Forum.Entities.Topic
-
+@using Forum.Entities;
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,10 +9,13 @@
 
 <div class="text-center">
     <h1 style="text-align:center;">@Html.DisplayFor(model => model.Content) </h1>
-    <form asp-action="Create" asp-controller="Response" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@Model.Id" method="post">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Create" class="btn btn-secondary" />
-    </form>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form asp-action="Create" asp-controller="Response" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Add Response" class="btn btn-secondary" />
+        </form>
+    }
 </div>
 
 <div>
@@ -21,7 +26,7 @@
             @Html.DisplayNameFor(model => model.Author)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Author.Email)
+            <a asp-controller="User" asp-action="Details" asp-route-id="@Model.AuthorId">@Html.DisplayFor(model => model.Author.UserName)</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
@@ -30,7 +35,7 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
+            Title
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Content)
@@ -44,13 +49,11 @@
     </dl>
 </div>
 <div>
-    @foreach (var item in Model.Responses)
-    {
     <table class="table">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Responses.First().Author.Email)
+                    @Html.DisplayNameFor(model => model.Responses.First().Author.UserName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Responses.First().Content)
@@ -62,9 +65,11 @@
             </tr>
         </thead>
         <tbody>
+            @foreach (var item in Model.Responses)
+            {
             <tr>
-                <td >
-                    @Html.DisplayFor(modelItem => item.Author.Email)
+                <td>
+                    <a asp-controller="User" asp-action="Details" asp-route-id="@item.AuthorId"> @UserManager.FindByIdAsync(item.AuthorId.ToString()).Result.UserName</a>
                 </td>
                 <td>
                     <a asp-controller="Response" asp-action="Details" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id"> @Html.DisplayFor(modelItem => item.Content)</a>
@@ -72,14 +77,20 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
-                <td>
-                    <a asp-controller="Response" asp-action="Edit" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-controller="Response" asp-action="Delete" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Delete</a>
-                </td>
+                @if(UserManager.GetUserId(User) is not null)
+                {
+                @if (int.Parse(UserManager.GetUserId(User)) == item.AuthorId || User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <td>
+                        <a asp-controller="Response" asp-action="Edit" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="Response" asp-action="Delete" asp-route-categoryid="@Model.CategoryId" asp-route-topicid="@item.TopicId" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+                }
             </tr>
+            }
         </tbody>
     </table>
-    }
 </div>
 <div>
     <a asp-controller="Category" asp-action="Details" asp-route-id="@Model.CategoryId">Back to List</a>

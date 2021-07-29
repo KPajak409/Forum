@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
-    //[Authorize(Roles = "Admin, Moderator")]
+    [Authorize(Roles = "Admin, Moderator")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -28,7 +28,7 @@ namespace Forum.Controllers
             return View(categories);
         }
         [AllowAnonymous]
-        public IActionResult Details(int id)
+        public IActionResult Details(int? id)
         {
             var category = _categoryService.GetById(id);
             return View(category);  
@@ -38,10 +38,11 @@ namespace Forum.Controllers
         public ActionResult Create(CreateOrUpdateCategoryDto dto)
         {
             if(ModelState.IsValid)
-            {
+            {     
                 _categoryService.Create(dto) ;
                 return RedirectToAction("Index");
             }
+
             return View();
         }
 

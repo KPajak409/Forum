@@ -11,13 +11,16 @@ using System.Threading.Tasks;
 namespace Forum.Controllers
 {
     [Route("Category/{categoryid}/Topic/{topicid}/Response")]
+    [Authorize]
     public class ResponseController : Controller
     {
         private readonly IResponseService _responseService;
+        private readonly ITopicService _topicService;
 
-        public ResponseController(IResponseService responseService)
+        public ResponseController(IResponseService responseService, ITopicService topicService)
         {
             _responseService = responseService;
+            _topicService = topicService;
         }
 
         public ActionResult Index()
@@ -26,10 +29,11 @@ namespace Forum.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult Details(int topicid, int id)
         {
-            var reponse = _responseService.GetById(topicid, id);
-            return View(reponse);
+            var response = _responseService.GetById(topicid, id);
+            return View(response);
         }
 
 
@@ -38,8 +42,8 @@ namespace Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                _responseService.Create(dto, topicid);
-                return RedirectToAction("Details", "Category", new { id = categoryid });
+                var id = _responseService.Create(dto, topicid);
+                return View("../Topic/Details", _topicService.GetById(categoryid, topicid));
             }
             return View();
         }
@@ -57,7 +61,7 @@ namespace Forum.Controllers
         public ActionResult EditSave(CreateResponseDto dto, int categoryid, int topicid, int id)
         {
             _responseService.Update(dto, topicid, id);
-            return RedirectToAction("Details", "Category", new { id = categoryid });
+            return View("../Topic/Details", _topicService.GetById(categoryid, topicid));
         }
 
         [HttpGet("Delete/{id}")]
@@ -70,11 +74,11 @@ namespace Forum.Controllers
         // POST: HomeController1/Delete/5
         [HttpPost("DeleteConfirmed/{id}")]
         //[ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int topicid, int id)
+        public ActionResult DeleteConfirmed(int categoryid, int topicid, int id)
         {
 
             _responseService.Delete(topicid, id);
-            return RedirectToAction("Details", "Category", new { id = topicid });
+            return View("../Topic/Details", _topicService.GetById(categoryid, topicid));
         }
     }
 }
