@@ -65,14 +65,6 @@ namespace Forum.Entities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
-        }
-
-        public DbSet<Forum.Models.CreateOrUpdateCategoryDto> CreateCategoryDto { get; set; }
-
-        public DbSet<Forum.Models.CreateTopicDto> CreateTopicDto { get; set; }
-
-        public DbSet<Forum.Models.CreateResponseDto> CreateResponseDto { get; set; }
-
-        public DbSet<Forum.Models.BanUserDto> BanUserDto { get; set; }
+        }      
     }
 }

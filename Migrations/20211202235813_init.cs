@@ -14,6 +14,7 @@ namespace Forum.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -63,46 +64,6 @@ namespace Forum.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CreateCategoryDto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CreateCategoryDto", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CreateResponseDto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CreateResponseDto", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CreateTopicDto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CreateTopicDto", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -385,15 +346,6 @@ namespace Forum.Migrations
 
             migrationBuilder.DropTable(
                 name: "BlackList");
-
-            migrationBuilder.DropTable(
-                name: "CreateCategoryDto");
-
-            migrationBuilder.DropTable(
-                name: "CreateResponseDto");
-
-            migrationBuilder.DropTable(
-                name: "CreateTopicDto");
 
             migrationBuilder.DropTable(
                 name: "Responses");
